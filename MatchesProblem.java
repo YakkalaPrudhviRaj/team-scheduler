@@ -1,133 +1,117 @@
 import java.util.*;
-import java.util.stream.Collectors;
-public class MatchesProblem
-{
-    public static void main(String[] args) throws Exception {
-        ArrayList<Team> teams=new ArrayList<>();
-        teams.add(new Team("T1"));
-        teams.add(new Team("T2"));
-        teams.add(new Team("T3"));
-        teams.add(new Team("T4"));
-        teams.add(new Team("T5"));
-        List<Match> matches=Scheduler.createSchedule(teams);
-        System.out.println(matches);
-        Simulator.playMatches(matches);
-        Simulator.showPointsTable(teams,matches);
+
+public class MatchesProblem {
+    public static void main(String[] args) {
+        ArrayList<String> as = new ArrayList<>();
+        Teams t = new Teams();
+        t.setTeam1("team1");
+        t.setTeam2("team2");
+        t.setTeam3("team3");
+        t.setTeam4("team4");
+        t.setTeam5("team5");
+        as.add(t.getTeam1());
+        as.add(t.getTeam2());
+        as.add(t.getTeam3());
+        as.add(t.getTeam4());
+        as.add(t.getTeam5());
+        System.out.println(as);
+        Sechudler sc = new Sechudler();
+       // ArrayList<HashMap<String, String>> hm = sc.shedule(as);
+        //System.out.println(hm);
+        sc.Schedule(as);
     }
 }
-class Match
-{
-    private Team team1;
-    private Team team2;
-    private Team winner;
-    private Team loser;
-    Match(Team team,Team team3)
-    {
-        this.team1=team;
-        this.team2=team3;
+
+class Teams {
+    private String team1;
+    private String team2;
+    private String team3;
+    private String team4;
+    private String team5;
+
+    public void setTeam1(String str) {
+        team1 = str;
     }
-    public Team getTeam1()
-    {
+
+    public void setTeam2(String str) {
+        team2 = str;
+    }
+
+    public void setTeam3(String str) {
+        team3 = str;
+    }
+
+    public void setTeam4(String str) {
+        team4 = str;
+    }
+
+    public void setTeam5(String str) {
+        team5 = str;
+    }
+
+    public String getTeam1() {
         return team1;
     }
-    public Team getTeam2()
-    {
+
+    public String getTeam2() {
         return team2;
     }
-    public Team getWinner()
-    {
-        return winner;
+
+    public String getTeam3() {
+        return team3;
     }
-    public void setWinner(Team winner)
-    {
-        this.winner=winner;
+
+    public String getTeam4() {
+        return team4;
     }
-    public Team getLoser()
-    {
-        return loser;
-    }
-    public void setLoser(Team loser)
-    {
-        this.loser=loser;
-    }
-    @Override
-    public String toString()
-    {
-        String matchDescription = team1 +" vs "+team2;
-        if(winner!=null)
-        {
-            String result="\n winner="+this.winner.toString()+"Loser="+this.loser.toString();
-            matchDescription+=result;
-        }
-        return matchDescription;
+
+    public String getTeam5() {
+        return team5;
     }
 }
-class Scheduler
-{
-    public static List<Match> createSchedule(List<Team> teams)
-    {
-        List<Match> matches=new ArrayList<>();
-        for(int i=0;i<teams.size();i++)
-        {
-            for(int j=i+1;j<teams.size();j++)
-            {
-                Match match=new Match(teams.get(i), teams.get(j));
-                matches.add(match);
+
+class Sechudler {
+   /*  public ArrayList<HashMap<String, String>> shedule(ArrayList<String> as) {
+        ArrayList<HashMap<String, String>> al = new ArrayList<>();
+        for (int i = 0; i < as.size(); i++) {
+            HashMap<String, String> hm = new HashMap<>();
+            for (int j = i + 1; j < as.size(); j++) {
+                hm.put(as.get(j), as.get(i));
+            }
+            al.add(hm);
+        }
+        return al;
+    }*/
+    public void Schedule(ArrayList<String> arr){
+        int count[] = { 0, 0, 0, 0, 0 };
+        Random r = new Random();
+        for (int i = 0; i < arr.size(); i++) {
+            //System.out.println("day " + (i + 1) + " Matches");
+            for (int j = 0; j < arr.size() / 2; j++) {
+                int t1 = (i + j) % (arr.size() - 1);
+                int t2 = (arr.size() - 1 - j + i) % (arr.size() - 1);
+                if (j == 0) {
+                    t2 = arr.size() - 1;
+                }
+                System.out.println(arr.get(t1) + " VS " + arr.get(t2));
+                System.out.println("Enter 0 if team " + arr.get(i) + " won else 1");
+                int n = r.nextInt(2);
+                if (n == 0) {
+                    count[i] = count[i] + 1;
+                    System.out.println(arr.get(i) + " won");
+                } else {
+                    count[j] = count[j] + 1;
+                    System.out.println(arr.get(j) + " won");
+                }
             }
         }
-        return matches;
-    }
-}
-class Simulator
-{
-    /**
-     * @param matches
-     */
-    public static void playMatches(List<Match> matches)
-    {
-        for(Match match:matches)
-        {
-            int random=(int)((Math.random()*10)+1);
-            if(random%2==0)
-            {
-                match.setWinner(match.getTeam1());
-                match.setLoser(match.getTeam2());
-            }
-            else
-            {
-                match.setWinner(match.getTeam2());
-                match.setLoser(match.getTeam1());
-            }
+        for (int i = 0; i <= 4; i++) {
+            System.out.println(arr.get(i) + " won " + count[i] + " matches");
+            System.out.println(arr.get(i) + " lost " + (5-count[i]) +" matches");
+
+
         }
+
     }
-    public static void showPointsTable(List<Team> teams,List<Match> matches)
-    {
-        for(Team team:teams)
-        {
-            int wonGames=matches.stream().filter(m ->m.getWinner().equals(team)).collect(Collectors.toList()).size();
-            int lostGames=matches.stream().filter(m ->m.getLoser().equals(team)).collect(Collectors.toList()).size();
-            System.out.println("------------");
-            System.out.println(team);
-            System.out.println("won matches: "+wonGames);
-            System.out.println("lost matches: "+lostGames);
-            System.out.println("------------");
-        }
-    }
-}
-class Team
-{
-    private String name;
-    Team(String name)
-    {
-        this.name=name;
-    }
-    @Override
-    public String toString()
-    {
-        return name;
-    }
-    public boolean equals(Object obj)
-    {
-        return this.name.equals(((Team)obj).name);
-    }
+
 }
